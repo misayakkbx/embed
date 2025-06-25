@@ -1,0 +1,62 @@
+六、交叉编译
+1.使用串口发送文件
+[root@GEC6818 /IOT/bling]#which rx
+/bin/rx
+[root@GEC6818 /IOT/bling]#rx gec6818.jpg
+CCCC
+开始 xmodem 传输。  按 Ctrl+C 取消。
+  100%     211 KB    7 KB/s 00:00:30       0 Errors
+
+2.使用U盘传送文件（以下操作都是在开发板上面操作）
+1）系统自动挂载
+插上U盘之后，自动打印如下信息，找到u盘的文件节点名字
+[  911.476000] sd 0:0:0:0: [sda] Write cache: disabled, read cache: enabled, doesn't support DPO or FUA
+[  911.490000]  sda: sda1   //u盘的文件名叫做sda1
+[  911.495000] sd 0:0:0:0: [sda] Attached SCSI removable disk
+[root@GEC6818 /IOT/bling]#df -h
+Filesystem                Size      Used Available Use% Mounted on
+/dev/root               492.1M    286.5M    205.6M  58% /
+devtmpfs                395.9M         0    395.9M   0% /dev
+tmpfs                   404.0M         0    404.0M   0% /dev/shm
+tmpfs                   404.0M         0    404.0M   0% /tmp
+tmpfs                   404.0M         0    404.0M   0% /run
+sda1                     28.8G    131.7M     28.7G   0% /mnt/udisk  
+如果出现sda1表示系统自动挂载成功
+[root@GEC6818 /IOT/bling]#cp /mnt/udisk/gec6818.jpg ./  拷贝过来
+
+2）手动挂载
+[root@GEC6818 /IOT/bling]#mkdir xxx
+[root@GEC6818 /IOT/bling]#mount /dev/sda1 xxx/
+[root@GEC6818 /IOT/bling]#df -h
+Filesystem                Size      Used Available Use% Mounted on
+/dev/root               492.1M    286.5M    205.6M  58% /
+devtmpfs                395.9M         0    395.9M   0% /dev
+tmpfs                   404.0M         0    404.0M   0% /dev/shm
+tmpfs                   404.0M         0    404.0M   0% /tmp
+tmpfs                   404.0M         0    404.0M   0% /run
+sda1                     28.8G    131.7M     28.7G   0% /mnt/udisk
+/dev/sda1                28.8G    131.7M     28.7G   0% /IOT/bling/xxx  （手动挂载成功）
+[root@GEC6818 /IOT/bling]#cp xxx/gec6818.jpg ./
+
+3）卸载U盘
+[root@GEC6818 /IOT/bling]#df -h （首先查看磁盘挂载信息）
+Filesystem                Size      Used Available Use% Mounted on
+/dev/root               492.1M    286.5M    205.6M  58% /
+devtmpfs                395.9M         0    395.9M   0% /dev
+tmpfs                   404.0M         0    404.0M   0% /dev/shm
+tmpfs                   404.0M         0    404.0M   0% /tmp
+tmpfs                   404.0M         0    404.0M   0% /run
+sda1                     28.8G    131.7M     28.7G   0% /mnt/udisk
+/dev/sda1                28.8G    131.7M     28.7G   0% /IOT/bling/xxx
+[root@GEC6818 /IOT/bling]#umount xxx  （卸载手动挂载的xxx目录）
+[root@GEC6818 /IOT/bling]#df -h
+Filesystem                Size      Used Available Use% Mounted on
+/dev/root               492.1M    286.5M    205.6M  58% /
+devtmpfs                395.9M         0    395.9M   0% /dev
+tmpfs                   404.0M         0    404.0M   0% /dev/shm
+tmpfs                   404.0M         0    404.0M   0% /tmp
+tmpfs                   404.0M         0    404.0M   0% /run
+sda1                     28.8G    131.7M     28.7G   0% /mnt/udisk
+[root@GEC6818 /IOT/bling]#ls xxx/
+练习7：
+      练习串口发送文件和u盘发送文件
